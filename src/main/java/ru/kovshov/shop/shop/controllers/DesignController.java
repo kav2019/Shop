@@ -2,40 +2,52 @@ package ru.kovshov.shop.shop.controllers;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import ru.kovshov.shop.shop.data.BurgerRepsitory;
+import ru.kovshov.shop.shop.data.IngredientRepository;
 import ru.kovshov.shop.shop.models.Burger;
 import ru.kovshov.shop.shop.models.Ingredient;
+import ru.kovshov.shop.shop.models.Order;
 import ru.kovshov.shop.shop.models.Type;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
 @RequestMapping("/design")
+@SessionAttributes("order")
 public class DesignController {
+
+    private final IngredientRepository ingredientRepo;
+    private final BurgerRepsitory burgerRepsitory;
+
+    @Autowired
+    public DesignController(IngredientRepository ingredientRepository, BurgerRepsitory burgerRepsitory) {
+        this.ingredientRepo = ingredientRepository;
+        this.burgerRepsitory = burgerRepsitory;
+    }
+
+    @ModelAttribute(name = "order")
+    public Order order(){
+        return new Order();
+    }
+
+    @ModelAttribute(name = "burger")
+    public Burger burger(){
+        return new Burger();
+    }
+
 
     @GetMapping
     public String showDesignForm(Model model){
-        List<Ingredient> ingredients = Arrays.asList(
-                new Ingredient("FLTO", "Flour Tortilla", Type.WRAP),
-                new Ingredient("COTO", "Corn Tortilla", Type.WRAP),
-                new Ingredient("GRBF", "Ground Beef", Type.PROTEIN),
-                new Ingredient("CARN", "Carnitas", Type.PROTEIN),
-                new Ingredient("TMTO", "Diced Tomatoes", Type.VEGGIES),
-                new Ingredient("LETC", "Lettuce", Type.VEGGIES),
-                new Ingredient("CHED", "Cheddar", Type.CHEESE),
-                new Ingredient("JACK", "Monterrey Jack", Type.CHEESE),
-                new Ingredient("SLSA", "Salsa", Type.SAUCE),
-                new Ingredient("SRCR", "Sour Cream", Type.SAUCE)
-        );
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredientRepo.findAll().forEach(i -> ingredients.add(i));
         Type[] types = Type.values();
         for (Type type : types){
             model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
@@ -45,11 +57,13 @@ public class DesignController {
     }
 
     @PostMapping
-    public String processDesign(@Valid Burger design, Errors errors){
+    public String processDesign(@Valid Burger design, Errors errors, @ModelAttribute Order order){
         if(errors.hasErrors()){
             return "design";
         }
         log.info("Processing design: " + design);
+        Burger seved = burgerRepsitory.save(design);
+//        order.getDesignBurger().add(seved);
         return "redirect:/orders/current";
     }
 
