@@ -1,15 +1,6 @@
 package ru.kovshov.shop.shop.controllers;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.kovshov.shop.shop.models.Ingredient;
-import ru.kovshov.shop.shop.models.Type;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class DesignControllerTest {

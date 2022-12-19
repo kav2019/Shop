@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.kovshov.shop.shop.models.Ingredient;
-import ru.kovshov.shop.shop.models.Type;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +43,7 @@ public class JdbcIngredientRepository implements IngredientRepository{
         return new Ingredient(
                 rs.getString("id"),
                 rs.getString("name"),
-                Type.valueOf(rs.getString("type"))
+                Ingredient.Type.valueOf(rs.getString("type"))
         );
     }
 }

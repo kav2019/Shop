@@ -12,7 +12,6 @@ import ru.kovshov.shop.shop.data.IngredientRepository;
 import ru.kovshov.shop.shop.models.Burger;
 import ru.kovshov.shop.shop.models.Ingredient;
 import ru.kovshov.shop.shop.models.Order;
-import ru.kovshov.shop.shop.models.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +47,10 @@ public class DesignController {
     public String showDesignForm(Model model){
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepo.findAll().forEach(i -> ingredients.add(i));
-        Type[] types = Type.values();
-        for (Type type : types){
+        Ingredient.Type[] types = Ingredient.Type.values();
+        for (Ingredient.Type type : types){
             model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
         }
-        model.addAttribute("design", new Burger());
         return "design";
     }
 
@@ -63,11 +61,11 @@ public class DesignController {
         }
         log.info("Processing design: " + design);
         Burger seved = burgerRepsitory.save(design);
-//        order.getDesignBurger().add(seved);
+        order.addDesign(seved);
         return "redirect:/orders/current";
     }
 
-    public List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
+    public List<Ingredient> filterByType(List<Ingredient> ingredients, Ingredient.Type type) {
         return ingredients.stream()
                 .filter(x -> x.getType() == type)
                 .collect(Collectors.toList());
