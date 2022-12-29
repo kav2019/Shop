@@ -7,5 +7,11 @@
 <body>
 <h1>Welcome to...</h1>
 <img th:src="@{/images/LogoShop.png}"/>
+<form method="POST" th:action="@{/logout}">
+  <input type="submit" value="Logout"/>
+</form>
+<form method="GET" th:action="@{/login}">
+  <input type="submit" value="login"/>
+</form>
 </body>
 </html>

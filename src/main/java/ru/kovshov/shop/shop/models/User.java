@@ -1,9 +1,6 @@
 package ru.kovshov.shop.shop.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +14,13 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Entity
+@Table(name = "Users")
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @RequiredArgsConstructor
 public class User implements UserDetails {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -33,12 +33,13 @@ public class User implements UserDetails {
     private final String city;
     private final String state;
     private final String zip;
+    @Column(name = "phonenumber")
     private final String phoneNumber;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("USER"));
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override

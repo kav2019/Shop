@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.CreditCardNumber;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "order_burger")
-public class Order {
+public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +49,9 @@ public class Order {
 
     @ManyToMany(targetEntity = Burger.class)
     private List<Burger> designBurger = new ArrayList<>();
+
+    @ManyToOne
+    private User user;
 
     public void addDesign(Burger design) {
         this.designBurger.add(design);
